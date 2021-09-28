@@ -47,16 +47,19 @@ namespace Direction{
     const tuple<int,int> directions[8] = {UP, UP_LEFT, UP_RIGHT, DOWN, DOWN_LEFT,DOWN_RIGHT,LEFT, RIGHT};
 }
 class Board{
-    PieceColor board[64];
+    public:
+        const static int boardSize = 64;
+        PieceColor board[boardSize];
 
     Board(){
-        board[64] = {NONE};
+        board[boardSize] = {NONE};
         set_piece(5, 'D', BLUE);
         set_piece(5, 'E', ORANGE);
         set_piece(4, 'D', ORANGE);
         set_piece(4, 'E', BLUE);
     };
     
+    public:
     PieceColor _get_piece(int row, int col){
         return board[row*8 + col];
     }
@@ -134,7 +137,7 @@ class Board{
     bool is_full(){
         int count = 0;
 
-        for(int i=0; i < (sizeof(board)/sizeof(board[0])); i++){
+        for(int i=0; i < boardSize; i++){
             if(board[i]== NONE){
                 count++;
             }
@@ -143,7 +146,7 @@ class Board{
         return (count == 0);
     }
 
-    map<PieceColor,int> get_counts(){
+     map<PieceColor,int> get_counts(){
         int blue = 0, orange = 0;
 
         for (PieceColor color : board){
