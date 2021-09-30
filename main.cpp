@@ -1,9 +1,9 @@
 
-#include <iostream>
-#include <fstream>
-#include <string>
-#include <unistd.h>
-#include "windows.h"
+#include <iostream>;
+#include <fstream>;
+#include <string>;
+//#include <unistd.h>;
+#include <windows.h>;
 
 using namespace std;
 
