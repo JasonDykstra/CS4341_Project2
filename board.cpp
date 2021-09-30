@@ -3,6 +3,7 @@
 #include <array>;
 #include <list>;
 #include <map>;
+
 using namespace std;
 
 class Direction{
@@ -44,11 +45,11 @@ class Board{
         PieceColor board[boardSize];
 
     Board(){
-        board[boardSize] = {NONE};
-        set_piece(5, 'D', BLUE);
-        set_piece(5, 'E', ORANGE);
-        set_piece(4, 'D', ORANGE);
-        set_piece(4, 'E', BLUE);
+        board[boardSize] = {PieceColor::NONE};
+        set_piece(5, 'D', PieceColor::BLUE);
+        set_piece(5, 'E', PieceColor::ORANGE);
+        set_piece(4, 'D', PieceColor::ORANGE);
+        set_piece(4, 'E', PieceColor::BLUE);
     };
     
     public:
@@ -149,7 +150,7 @@ class Board{
                 orange++;
             }
         }
-        map<PieceColor,int> output = {{BLUE,blue}, {ORANGE,orange}}; //, {NONE, boardSize-(blue+orange)}
+        map<PieceColor,int> output = {{PieceColor::BLUE,blue}, {PieceColor::ORANGE,orange}}; //, {NONE, boardSize-(blue+orange)}
         return output;
     }
 
