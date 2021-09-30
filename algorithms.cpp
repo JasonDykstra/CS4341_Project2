@@ -76,7 +76,6 @@ tuple<int,int, int> minimax(Board board, PieceColor currentColor, int depth, tup
         bool hasNoMoves = true;
         for (tuple<int,int> move: board.findAllValidMoves(currentColor)){
             hasNoMoves = false;
-            int x = currentColor;
             if(board._set_piece(get<0>(move),get<1>(move), currentColor)){
                 tuple<int, int, int> value = minimax(board, (PieceColor)(-(int)currentColor), depth-1, move, false, alpha, beta);
                 if(get<2>(bestVal) > get<2>(value)){
@@ -87,7 +86,7 @@ tuple<int,int, int> minimax(Board board, PieceColor currentColor, int depth, tup
             }
         }
         if(hasNoMoves){
-            minimax(board, (PieceColor)(-(int)currentColor), depth-1, lastMove, false, alpha, beta); //TODO: Come back
+            minimax(board, (PieceColor)(-(int)currentColor), depth-1, lastMove, false, alpha, beta);
         }
         return tuple<int,int,int>(get<0>(lastMove),get<1>(lastMove),get<2>(bestVal));
     }
