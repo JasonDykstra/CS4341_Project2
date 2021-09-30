@@ -1,4 +1,4 @@
-#include "board.cpp";
+#include "board.cpp"
 
 using namespace std;
 const int MINIMAX_DEPTH = 5;
@@ -28,8 +28,8 @@ PieceColor findWinner(Board board){
 }
 
 double mobilityHeuristic(Board board, PieceColor maximizingColor){
-    int maximizingColorMoves = size(board.findAllValidMoves(maximizingColor));
-    int minimizingColorMoves = size(board.findAllValidMoves(static_cast<PieceColor>(-(int)maximizingColor)));
+    int maximizingColorMoves = (board.findAllValidMoves(maximizingColor)).size();
+    int minimizingColorMoves = (board.findAllValidMoves(static_cast<PieceColor>(-(int)maximizingColor))).size();
     if(maximizingColorMoves + minimizingColorMoves != 0){
         int mobilityScore = 100 * (maximizingColorMoves - minimizingColorMoves) / (maximizingColorMoves + minimizingColorMoves);
         return mobilityScore;
@@ -87,18 +87,18 @@ int quickHeuristc(Board board, PieceColor pieceColor) {
 tuple<int,int,int> minimax(Board board, PieceColor currentColor, int depth, tuple<int,int> lastMove, bool isMaximizingPlayer, double alpha, double beta){
 
     if(findWinner(board) == currentColor){
-        return tuple(get<0>(lastMove), get<1>(lastMove), INT_MAX);
+        return make_tuple(get<0>(lastMove), get<1>(lastMove), INT_MAX);
     }
     else if (findWinner(board) == -currentColor){
-        return tuple(get<0>(lastMove), get<1>(lastMove), INT_MIN);
+        return make_tuple(get<0>(lastMove), get<1>(lastMove), INT_MIN);
     }
 
     if(isMaximizingPlayer){
         if(depth == 0){
-            return tuple(get<0>(lastMove), get<1>(lastMove), quickHeuristc(board, currentColor));
+            return make_tuple(get<0>(lastMove), get<1>(lastMove), quickHeuristc(board, currentColor));
         }
 
-        tuple<int, int, int> bestVal = tuple(-1,-1,INT_MIN);
+        tuple<int, int, int> bestVal = make_tuple(-1,-1,INT_MIN);
         bool hasNoMoves = true;
         for (tuple<int,int> move: board.findAllValidMoves(currentColor)){
             hasNoMoves = false;
@@ -118,10 +118,10 @@ tuple<int,int,int> minimax(Board board, PieceColor currentColor, int depth, tupl
     }
     else {
         if(depth == 0){
-            return tuple(get<0>(lastMove), get<1>(lastMove), quickHeuristc(board, currentColor));
+            return make_tuple(get<0>(lastMove), get<1>(lastMove), quickHeuristc(board, currentColor));
         }
 
-        tuple<int, int, int> bestVal = tuple(-1,-1,INT_MAX);
+        tuple<int, int, int> bestVal = make_tuple(-1,-1,INT_MAX);
         bool hasNoMoves = true;
         for (tuple<int,int> move: board.findAllValidMoves(currentColor)){
             hasNoMoves = false;
@@ -139,6 +139,12 @@ tuple<int,int,int> minimax(Board board, PieceColor currentColor, int depth, tupl
         }
         return tuple<int,int,int>(get<0>(lastMove),get<1>(lastMove), get<2>(bestVal));
     }
-
-
 }
+
+    string getBestMove(Board board, PieceColor agentColor) {
+        tuple<int, int, int> move = minimax(board, agentColor, 10, make_tuple(-1, -1), true, 0, 0);
+        int row = get<0>(move);
+        int column = get<1>(move);
+        
+        return (char)(row + 65) + " " + column;
+    }

@@ -1,12 +1,12 @@
-#include <iostream>;
-#include <fstream>;
-#include <string>;
+#include <iostream>
+#include <fstream>
+#include <string>
 //#include <unistd.h>;
-#include "board.cpp";
-#include "algorithms.cpp";
-#include <windows.h>;
-#include <sys/stat.h>;
-#include <sstream>;
+#include "board.cpp"
+#include "algorithms.cpp"
+#include <windows.h>
+#include <sys/stat.h>
+#include <sstream>
 
 using namespace std;
 
@@ -84,7 +84,7 @@ void gameLoop() {
             }
 
             //!GET OUR AGENT'S MOVE
-            string agentMove = algorithms::getBestMove(board);
+            string agentMove = getBestMove(board, pieceColor);
 
             writeMoveToFile(agentMove);
             Sleep(50);
@@ -97,7 +97,11 @@ void gameLoop() {
 
 void testGameLoop() {
     string c;
+    cout << "ficl: ";
     cin >> c;
+    
+
+
 }
 
 int main(){
