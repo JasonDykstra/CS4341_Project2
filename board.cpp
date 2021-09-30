@@ -119,8 +119,9 @@ class Board{
             return false;
         }
         return true;
-
     }
+
+    
 
     bool set_piece(int row, char col, PieceColor color){
         tuple<int,int> coords = interpret_coords(row, col);

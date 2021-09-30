@@ -77,11 +77,13 @@ tuple<int,int, int> minimax(Board board, PieceColor currentColor, int depth, tup
         for (tuple<int,int> move: board.findAllValidMoves(currentColor)){
             hasNoMoves = false;
             int x = currentColor;
-            tuple<int, int, int> value = minimax(board, (PieceColor)(-(int)currentColor), depth-1, move, false, alpha, beta);
-            if(get<2>(bestVal) > get<2>(value)){
-                bestVal = value;
-                alpha = max(alpha, get<2>(bestVal));
-                if (beta <= alpha) break;
+            if(board._set_piece(get<0>(move),get<1>(move), currentColor)){
+                tuple<int, int, int> value = minimax(board, (PieceColor)(-(int)currentColor), depth-1, move, false, alpha, beta);
+                if(get<2>(bestVal) > get<2>(value)){
+                    bestVal = value;
+                    alpha = max(alpha, get<2>(bestVal));
+                    if (beta <= alpha) break;
+                }
             }
         }
         if(hasNoMoves){
@@ -98,11 +100,13 @@ tuple<int,int, int> minimax(Board board, PieceColor currentColor, int depth, tup
         bool hasNoMoves = true;
         for (tuple<int,int> move: board.findAllValidMoves(currentColor)){
             hasNoMoves = false;
-            tuple<int, int, int> value = minimax(board, (PieceColor)(-(int)currentColor), depth-1, move, true, alpha, beta);
-            if(get<2>(bestVal) > get<2>(value)){
-                bestVal = value;
-                beta = min(beta, get<2>(bestVal));
-                if (beta <= alpha) break;
+            if(board._set_piece(get<0>(move),get<1>(move), currentColor)){
+                tuple<int, int, int> value = minimax(board, (PieceColor)(-(int)currentColor), depth-1, move, true, alpha, beta);
+                if(get<2>(bestVal) > get<2>(value)){
+                    bestVal = value;
+                    beta = min(beta, get<2>(bestVal));
+                    if (beta <= alpha) break;
+                }
             }
         }
         if(hasNoMoves){
