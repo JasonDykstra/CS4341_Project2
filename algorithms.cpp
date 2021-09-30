@@ -1,7 +1,7 @@
 #include "board.cpp";
-#include "main.cpp";
 
 using namespace std;
+const int MINIMAX_DEPTH = 5;
 
 PieceColor findWinner(int blueCount, int orangeCount) {
     if(blueCount + orangeCount == Board::boardSize){
@@ -55,7 +55,7 @@ double weightedBoardHeuristic(Board board, PieceColor color){
     };
 }
 
-int quickHeuristc(Board board) {
+int quickHeuristc(Board board, PieceColor pieceColor) {
     map<PieceColor,int> counts = board.get_counts();
     int blueCount = counts.at(PieceColor::BLUE);
     int orangeCount = counts.at(PieceColor::ORANGE);
@@ -95,7 +95,7 @@ tuple<int,int,int> minimax(Board board, PieceColor currentColor, int depth, tupl
 
     if(isMaximizingPlayer){
         if(depth == 0){
-            return tuple(get<0>(lastMove), get<1>(lastMove), quickHeuristc(board));
+            return tuple(get<0>(lastMove), get<1>(lastMove), quickHeuristc(board, currentColor));
         }
 
         tuple<int, int, int> bestVal = tuple(-1,-1,INT_MIN);
@@ -106,7 +106,7 @@ tuple<int,int,int> minimax(Board board, PieceColor currentColor, int depth, tupl
                 tuple<int, int, int> value = minimax(board, static_cast<PieceColor>(-(int)currentColor), depth-1, move, false, alpha, beta);
                 if(get<2>(bestVal) > get<2>(value)){
                     bestVal = value;
-                    alpha = max(alpha, get<2>(bestVal));
+                    alpha = max(alpha, (double)(get<2>(bestVal)));
                     if (beta <= alpha) break;
                 }
             }
@@ -118,7 +118,7 @@ tuple<int,int,int> minimax(Board board, PieceColor currentColor, int depth, tupl
     }
     else {
         if(depth == 0){
-            return tuple(get<0>(lastMove), get<1>(lastMove), quickHeuristc(board));
+            return tuple(get<0>(lastMove), get<1>(lastMove), quickHeuristc(board, currentColor));
         }
 
         tuple<int, int, int> bestVal = tuple(-1,-1,INT_MAX);
@@ -129,7 +129,7 @@ tuple<int,int,int> minimax(Board board, PieceColor currentColor, int depth, tupl
                 tuple<int, int, int> value = minimax(board, static_cast<PieceColor>(-(int)currentColor), depth-1, move, true, alpha, beta);
                 if(get<2>(bestVal) > get<2>(value)){
                     bestVal = value;
-                    beta = min(beta, get<2>(bestVal));
+                    beta = min(beta, (double)(get<2>(bestVal)));
                     if (beta <= alpha) break;
                 }
             }
