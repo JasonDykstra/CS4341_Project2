@@ -56,23 +56,53 @@ int quickHeuristc(Board board) {
     }
 }
 
-
-
-double heuristicFunction(Board board);
-
 tuple<int,int, int> minimax(Board board, PieceColor currentColor, tuple<int,int> lastMove, bool isMaximizingPlayer){
 
-if(findWinner(board) == currentColor){
-    return tuple(get<0>(lastMove), get<1>(lastMove), INT_MAX);
-}
-else if (findWinner(board) == -currentColor){
-    return tuple(get<0>(lastMove), get<1>(lastMove), INT_MIN);
-}
+    if(findWinner(board) == currentColor){
+        return tuple(get<0>(lastMove), get<1>(lastMove), INT_MAX);
+    }
+    else if (findWinner(board) == -currentColor){
+        return tuple(get<0>(lastMove), get<1>(lastMove), INT_MIN);
+    }
 
-if(isMaximizingPlayer){
-    int bestVal = INT_MIN;
-    for 
-}
+    if(isMaximizingPlayer){
+        if(depth == 0){
+            return tuple(get<0>(lastMove), get<1>(lastMove), quickHeuristc(board))
+        }
+
+        tuple<int, int, int> bestVal = tuple(-1,-1,INT_MIN);
+        bool hasNoMoves = true;
+        for (tuple<int,int> move: findAllValidMoves(currentColor)){
+            hasNoMoves = false;
+            tuple<int, int, int> value = minimax(board, depth-1, move, false);
+            if(get<2>(bestVal) > get<2>(value)){
+                bestVal = value;
+            }
+        }
+        if(hasNoMoves){
+            return tuple<int,int,int>(get<0>(lastMove),get<1>(lastMove), INT_MIN + 1) //TODO: Come back
+        }
+        return tuple<int,int,int>(get<0>(lastMove),get<1>(lastMove),get<2>(value));
+    }
+    else {
+        if(depth == 0){
+            return tuple(get<0>(lastMove), get<1>(lastMove), quickHeuristc(board))
+        }
+
+        tuple<int, int, int> bestVal = tuple(-1,-1,INT_MAX);
+        bool hasNoMoves = true;
+        for (tuple<int,int> move: findAllValidMoves(currentColor)){
+            hasNoMoves = false;
+            tuple<int, int, int> value = minimax(board, depth-1, move, true);
+            if(get<2>(bestVal) > get<2>(value)){
+                bestVal = value;
+            }
+        }
+        if(hasNoMoves){
+            return tuple<int,int,int>(get<0>(lastMove),get<1>(lastMove), INT_MIN - 1) //TODO: Come back
+        }
+        return tuple<int,int,int>(get<0>(lastMove),get<1>(lastMove),get<2>(value));
+    }
 
 
 }

@@ -164,8 +164,18 @@ class Board{
         }
         return false;
     }
-    tuple<int,int> findAllValidMoves(){
-        tuple<int,int> moves[];
+    list<tuple<int,int>> findAllValidMoves(PieceColor color){
+        list<tuple<int,int>> moves = list<tuple<int,int>>();
+        for(int row = 0; row < 8; row++){
+            for (int col = 0; col < 8; col++){
+                PieceColor piece = _get_piece(row, col);
+                if(piece == NONE && size(_get_enveloped_pieces(row,col,color)) > 0){
+                    moves.push_front(tuple(row,col));
+                }
+            }
+        }
+        return moves;
+
     }
     string __str__(){
         string out = "";
