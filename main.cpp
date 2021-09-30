@@ -3,6 +3,7 @@
 #include <string>;
 //#include <unistd.h>;
 #include "board.cpp";
+#include "algorithms.cpp";
 #include <windows.h>;
 #include <sys/stat.h>;
 #include <sstream>;
@@ -83,7 +84,7 @@ void gameLoop() {
             }
 
             //!GET OUR AGENT'S MOVE
-            string agentMove = getBestMove(board);
+            string agentMove = algorithms::getBestMove(board);
 
             writeMoveToFile(agentMove);
             Sleep(50);
