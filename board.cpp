@@ -7,7 +7,7 @@
 
 using namespace std;
 
-struct BoardDirection{
+class BoardDirection{
     //Tuple for possible directions
     public:
         static constexpr tuple<int, int> UP = make_tuple(-1,0);
@@ -28,8 +28,10 @@ tuple<int,int> interpret_coords(int row, char col){
 }
 
 tuple<int,int> transform_coords(int row, char col){
+
     return make_tuple(8 - row, int('A') + col);
 }
+
 bool out_of_bounds(int row, int col){
     if(row < 0 || row > 7 || col < 0 || col > 7)
         return true;
@@ -39,7 +41,6 @@ bool out_of_bounds(int row, int col){
 enum PieceColor{NONE, BLUE = 1, ORANGE = -1, TIE = 2};
 
 const tuple<int,int> directions[8] = {BoardDirection::UP, BoardDirection::UP_LEFT, BoardDirection::UP_RIGHT, BoardDirection::DOWN, BoardDirection::DOWN_LEFT, BoardDirection::DOWN_RIGHT, BoardDirection::LEFT, BoardDirection::RIGHT};
-
 
 class Board{
     public:

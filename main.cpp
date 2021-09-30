@@ -2,7 +2,6 @@
 #include <fstream>
 #include <string>
 #include <unistd.h>
-#include "board.cpp"
 #include "algorithms.cpp"
 // #include <windows.h>
 #include <sys/stat.h>
@@ -114,6 +113,7 @@ void testGameLoop()
 
 int main()
 {
+    cout << "did it work?" << "\n";
     testGameLoop();
     //gameLoop();
 }
