@@ -51,7 +51,6 @@ class Board{
         set_piece(4, 'D', PieceColor::ORANGE);
         set_piece(4, 'E', PieceColor::BLUE);
     };
-    
     public:
     PieceColor _get_piece(int row, int col){
         return board[row*8 + col];
@@ -202,6 +201,5 @@ class Board{
         }
         return out;
     }
-
 };
 
