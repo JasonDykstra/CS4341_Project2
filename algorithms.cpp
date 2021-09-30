@@ -15,6 +15,13 @@ PieceColor findWinner(Board board){
             return PieceColor::ORANGE;
         }
         else{
-            return PieceColor::NONE;
+            return PieceColor::TIE;
         }
+        return PieceColor::NONE;
+    }
+}
+
+tuple<int,int> minimax(int depth, Board board, bool isMax, int scores[], int h){
+    
+
 }

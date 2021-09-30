@@ -34,7 +34,7 @@ bool out_of_bounds(int row, int col){
     return false;
 }
 
-enum PieceColor{NONE, BLUE, ORANGE};
+enum PieceColor{NONE, BLUE, ORANGE, TIE};
 namespace Direction{
     const tuple<int,int> directions[8] = {UP, UP_LEFT, UP_RIGHT, DOWN, DOWN_LEFT,DOWN_RIGHT,LEFT, RIGHT};
 }
@@ -138,7 +138,7 @@ class Board{
         return (count == 0);
     }
 
-     map<PieceColor,int> get_counts(){
+    map<PieceColor,int> get_counts(){
         int blue = 0, orange = 0;
 
         for (PieceColor color : board){
@@ -149,7 +149,7 @@ class Board{
                 orange++;
             }
         }
-        map<PieceColor,int> output = {{BLUE,blue}, {ORANGE,orange}};
+        map<PieceColor,int> output = {{BLUE,blue}, {ORANGE,orange}}; //, {NONE, boardSize-(blue+orange)}
         return output;
     }
 
