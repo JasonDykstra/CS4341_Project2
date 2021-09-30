@@ -1,12 +1,13 @@
-#include <tuple>;
-#include <string>;
-#include <array>;
-#include <list>;
-#include <map>;
+#include <tuple>
+#include <string>
+#include <array>
+#include <list>
+#include <map>
+#include <vector>
 
 using namespace std;
 
-class Direction{
+struct BoardDirection{
     //Tuple for possible directions
     public:
         static constexpr tuple<int, int> UP = make_tuple(-1,0);
@@ -18,7 +19,7 @@ class Direction{
         static constexpr tuple<int, int> LEFT = make_tuple(0,-1);
         static constexpr tuple<int, int> RIGHT = make_tuple(0,1);
 
-    Direction(){
+    BoardDirection(){
     };
 };
 
@@ -36,9 +37,10 @@ bool out_of_bounds(int row, int col){
 }
 
 enum PieceColor{NONE, BLUE = 1, ORANGE = -1, TIE = 2};
-namespace Direction{
-    const tuple<int,int> directions[8] = {UP, UP_LEFT, UP_RIGHT, DOWN, DOWN_LEFT,DOWN_RIGHT,LEFT, RIGHT};
-}
+
+const tuple<int,int> directions[8] = {BoardDirection::UP, BoardDirection::UP_LEFT, BoardDirection::UP_RIGHT, BoardDirection::DOWN, BoardDirection::DOWN_LEFT, BoardDirection::DOWN_RIGHT, BoardDirection::LEFT, BoardDirection::RIGHT};
+
+
 class Board{
     public:
         const static int boardSize = 64;
@@ -65,7 +67,7 @@ class Board{
     list<tuple<int,int>> _get_enveloped_pieces(int row, int col, PieceColor color){
         list<tuple<int,int>> enveloped = (list<tuple<int,int>>());
 
-        for(tuple<int,int> off: Direction::directions){
+        for(tuple<int,int> off: directions){
             int row_off = get<0>(off), col_off = get<1>(off);
             int row_curr = row, col_curr = col;
 
@@ -81,7 +83,7 @@ class Board{
                     break;
                 }
                 else if(color_curr == color){
-                    if(size(potential_flip)> 0){
+                    if(potential_flip.size()> 0){
                         envelop=true;
                         break;
                     }
@@ -114,7 +116,7 @@ class Board{
             board[get<0>(coords) * 8 + get<1>(coords)] = color;
         }
 
-        if(size(envelop) == 0){
+        if(envelop.size() == 0){
             return false;
         }
         return true;
@@ -158,7 +160,7 @@ class Board{
         for(int row = 0; row < 8; row++){
             for (int col =0; col < 8; col++){
                 PieceColor piece = _get_piece(row, col);
-                if(piece == NONE && size(_get_enveloped_pieces(row,col,color)) > 0){
+                if(piece == NONE && _get_enveloped_pieces(row,col,color).size() > 0){
                     return true;
                 }
             }
@@ -166,12 +168,12 @@ class Board{
         return false;
     }
     list<tuple<int,int>> findAllValidMoves(PieceColor color){
-        list<tuple<int,int>> moves = list<tuple<int,int>>();
+        list<tuple<int,int>> moves = (list<tuple<int,int>>());; 
         for(int row = 0; row < 8; row++){
             for (int col = 0; col < 8; col++){
                 PieceColor piece = _get_piece(row, col);
-                if(piece == NONE && size(_get_enveloped_pieces(row,col,color)) > 0){
-                    moves.push_front(tuple(row,col));
+                if(piece == NONE && (_get_enveloped_pieces(row,col,color)).size() > 0) {
+                    moves.push_front(make_tuple(row,col));
                 }
             }
         }
