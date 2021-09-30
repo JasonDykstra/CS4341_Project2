@@ -56,7 +56,23 @@ int quickHeuristc(Board board) {
     }
 }
 
-tuple<int,int> minimax(int depth, Board board, bool isMax, int scores[], int h){
-    
+
+
+double heuristicFunction(Board board);
+
+tuple<int,int, int> minimax(Board board, PieceColor currentColor, tuple<int,int> lastMove, bool isMaximizingPlayer){
+
+if(findWinner(board) == currentColor){
+    return tuple(get<0>(lastMove), get<1>(lastMove), INT_MAX);
+}
+else if (findWinner(board) == -currentColor){
+    return tuple(get<0>(lastMove), get<1>(lastMove), INT_MIN);
+}
+
+if(isMaximizingPlayer){
+    int bestVal = INT_MIN;
+    for 
+}
+
 
 }
