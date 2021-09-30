@@ -86,7 +86,7 @@ tuple<int,int, int> minimax(Board board, PieceColor currentColor, int depth, tup
             }
         }
         if(hasNoMoves){
-            minimax(board, (PieceColor)(-(int)currentColor), depth-1, lastMove, false, alpha, beta);
+            minimax(board, (PieceColor)(-(int)currentColor), depth-1, lastMove, false, alpha, beta); //TODO: Comeback
         }
         return tuple<int,int,int>(get<0>(lastMove),get<1>(lastMove),get<2>(bestVal));
     }
