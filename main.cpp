@@ -1,13 +1,11 @@
 #include <iostream>;
 #include <fstream>;
 #include <string>;
-#include <unistd.h>;
+//#include <unistd.h>;
+#include "board.cpp";
 #include <windows.h>;
 
 using namespace std;
-
-enum PieceColor{NONE, BLUE, ORANGE};
-
 
 const string MOVE_FILE_NAME = "move_file.txt";
 const string END_GAME_FILE_NAME = "end_game";
