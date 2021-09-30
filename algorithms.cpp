@@ -56,7 +56,7 @@ int quickHeuristc(Board board) {
     }
 }
 
-tuple<int,int, int> minimax(Board board, PieceColor currentColor, tuple<int,int> lastMove, bool isMaximizingPlayer){
+tuple<int,int, int> minimax(Board board, PieceColor currentColor, int depth, tuple<int,int> lastMove, bool isMaximizingPlayer){
 
     if(findWinner(board) == currentColor){
         return tuple(get<0>(lastMove), get<1>(lastMove), INT_MAX);
@@ -74,13 +74,13 @@ tuple<int,int, int> minimax(Board board, PieceColor currentColor, tuple<int,int>
         bool hasNoMoves = true;
         for (tuple<int,int> move: findAllValidMoves(currentColor)){
             hasNoMoves = false;
-            tuple<int, int, int> value = minimax(board, depth-1, move, false);
+            tuple<int, int, int> value = minimax(board, -currentColor, depth-1, move, false);
             if(get<2>(bestVal) > get<2>(value)){
                 bestVal = value;
             }
         }
         if(hasNoMoves){
-            return tuple<int,int,int>(get<0>(lastMove),get<1>(lastMove), INT_MIN + 1) //TODO: Come back
+            minimax(board, -currentColor, depth-1, lastMove, false); //TODO: Come back
         }
         return tuple<int,int,int>(get<0>(lastMove),get<1>(lastMove),get<2>(value));
     }
@@ -93,13 +93,13 @@ tuple<int,int, int> minimax(Board board, PieceColor currentColor, tuple<int,int>
         bool hasNoMoves = true;
         for (tuple<int,int> move: findAllValidMoves(currentColor)){
             hasNoMoves = false;
-            tuple<int, int, int> value = minimax(board, depth-1, move, true);
+            tuple<int, int, int> value = minimax(board, -currentColor, depth-1, move, true);
             if(get<2>(bestVal) > get<2>(value)){
                 bestVal = value;
             }
         }
         if(hasNoMoves){
-            return tuple<int,int,int>(get<0>(lastMove),get<1>(lastMove), INT_MIN - 1) //TODO: Come back
+            return minimax(board, -currentColor, depth-1, lastMove, false); //TODO: Come back
         }
         return tuple<int,int,int>(get<0>(lastMove),get<1>(lastMove),get<2>(value));
     }
