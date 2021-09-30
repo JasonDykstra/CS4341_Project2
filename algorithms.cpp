@@ -2,6 +2,7 @@
 #include "main.cpp";
 
 using namespace std;
+const int MINIMAX_DEPTH = 5;
 
 PieceColor findWinner(int blueCount, int orangeCount) {
     if(blueCount + orangeCount == Board::boardSize){
@@ -75,13 +76,21 @@ int quickHeuristc(Board board) {
     } else {
         //game over
         if(winner == pieceColor) {
-            return INT_MAX;
+            return INT.MAX;
         } else if(winner == PieceColor::TIE) {
             return INT_MIN + 1;
         } else {
             return INT_MIN;
         }
     }
+}
+
+string getBestMove(Board board) {
+    tuple<int, int, int> move;// = minimax(board, pieceColor, MINIMAX_DEPTH, tuple(1, 1), true)
+
+    int row = get<0>(move);
+    int column = get<1>(move);
+    return (char)(row+65) + " " + column;
 }
 
 tuple<int,int, int> minimax(Board board, PieceColor currentColor, int depth, tuple<int,int> lastMove, bool isMaximizingPlayer, double alpha, double beta){
