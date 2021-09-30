@@ -35,11 +35,11 @@ int quickHeuristc(Board board) {
     PieceColor winner = findWinner(blueCount, orangeCount);
 
     //if game not over
-    if(winner == PieceColor::none) {
+    if(winner == PieceColor::NONE) {
         if(orangeCount > blueCount) {
-            return pieceColor == PieceColor.orange; ? 1 : -1;
+            return pieceColor == PieceColor::ORANGE ? 1 : -1;
         } else if(blueCount > orangeCount){
-            return pieceColor == PieceColor.orange; ? -1 : 1;
+            return pieceColor == PieceColor::ORANGE ? -1 : 1;
         } else {
             return 0;
         }
@@ -47,11 +47,11 @@ int quickHeuristc(Board board) {
     } else {
         //game over
         if(winner == pieceColor) {
-            return 5;
+            return INT_MAX;
         } else if(winner == PieceColor::TIE) {
-            return -INT.IN;
+            return INT_MIN + 1;
         } else {
-            return -5;
+            return INT_MIN;
         }
     }
 }
@@ -67,7 +67,7 @@ tuple<int,int, int> minimax(Board board, PieceColor currentColor, int depth, tup
 
     if(isMaximizingPlayer){
         if(depth == 0){
-            return tuple(get<0>(lastMove), get<1>(lastMove), quickHeuristc(board))
+            return tuple(get<0>(lastMove), get<1>(lastMove), quickHeuristc(board));
         }
 
         tuple<int, int, int> bestVal = tuple(-1,-1,INT_MIN);
@@ -82,7 +82,7 @@ tuple<int,int, int> minimax(Board board, PieceColor currentColor, int depth, tup
         if(hasNoMoves){
             minimax(board, -currentColor, depth-1, lastMove, false); //TODO: Come back
         }
-        return tuple<int,int,int>(get<0>(lastMove),get<1>(lastMove),get<2>(value));
+        return tuple<int,int,int>(get<0>(lastMove),get<1>(lastMove),get<2>(bestVal));
     }
     else {
         if(depth == 0){

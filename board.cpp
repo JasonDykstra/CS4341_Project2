@@ -34,7 +34,7 @@ bool out_of_bounds(int row, int col){
     return false;
 }
 
-enum PieceColor{NONE, BLUE = 1, ORANGE = -1, TIE = 2 };
+enum PieceColor{NONE, BLUE = 1, ORANGE = -1, TIE = 2};
 namespace Direction{
     const tuple<int,int> directions[8] = {UP, UP_LEFT, UP_RIGHT, DOWN, DOWN_LEFT,DOWN_RIGHT,LEFT, RIGHT};
 }
