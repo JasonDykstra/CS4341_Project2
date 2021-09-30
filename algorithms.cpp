@@ -3,8 +3,6 @@
 
 using namespace std;
 
-PieceColor getOppositeColor();
-
 PieceColor findWinner(int blueCount, int orangeCount) {
     if(blueCount + orangeCount == Board::boardSize){
         if ((blueCount-orangeCount) > 0){
