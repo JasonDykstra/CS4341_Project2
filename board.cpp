@@ -51,11 +51,6 @@ class Board{
         set_piece(4, 'D', PieceColor::ORANGE);
         set_piece(4, 'E', PieceColor::BLUE);
     };
-
-    Board clone(Board boardToCopy){
-        Board x =  (new Board()).board = *boardToCopy;
-        return (new Board()).board = *boardToCopy;
-    }
     public:
     PieceColor _get_piece(int row, int col){
         return board[row*8 + col];
