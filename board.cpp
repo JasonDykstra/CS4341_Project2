@@ -8,24 +8,16 @@ using namespace std;
 class Direction{
     //Tuple for possible directions
     public:
-        static tuple<int, int> UP;
-        static tuple<int, int> UP_LEFT;
-        static tuple<int, int> UP_RIGHT;
-        static tuple<int, int> DOWN;
-        static tuple<int, int> DOWN_LEFT;
-        static tuple<int, int> DOWN_RIGHT;
-        static tuple<int, int> LEFT;
-        static tuple<int, int> RIGHT;
+        static constexpr tuple<int, int> UP = make_tuple(-1,0);
+        static constexpr tuple<int, int> UP_LEFT = make_tuple(-1,-1);
+        static constexpr tuple<int, int> UP_RIGHT = make_tuple(-1,1);
+        static constexpr tuple<int, int> DOWN = make_tuple(1,0);
+        static constexpr tuple<int, int> DOWN_LEFT = make_tuple(1,-1);
+        static constexpr tuple<int, int> DOWN_RIGHT = make_tuple(1,1);
+        static constexpr tuple<int, int> LEFT = make_tuple(0,-1);
+        static constexpr tuple<int, int> RIGHT = make_tuple(0,1);
 
     Direction(){
-        UP = make_tuple(-1,0);
-        UP_LEFT = make_tuple(-1,-1);
-        UP_RIGHT = make_tuple(-1,1);
-        DOWN = make_tuple(1,0);
-        DOWN_LEFT = make_tuple(1,-1);
-        DOWN_RIGHT = make_tuple(1,1);
-        LEFT = make_tuple(0,-1);
-        RIGHT = make_tuple(0,1);
     };
 };
 
