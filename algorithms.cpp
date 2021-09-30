@@ -58,7 +58,7 @@ int quickHeuristc(Board board) {
     }
 }
 
-tuple<int,int, int> minimax(Board board, PieceColor currentColor, int depth, tuple<int,int> lastMove, bool isMaximizingPlayer){
+tuple<int,int, int> minimax(Board board, PieceColor currentColor, int depth, tuple<int,int> lastMove, bool isMaximizingPlayer, double alpha, double beta){
 
     if(findWinner(board) == currentColor){
         return tuple(get<0>(lastMove), get<1>(lastMove), INT_MAX);
@@ -77,13 +77,15 @@ tuple<int,int, int> minimax(Board board, PieceColor currentColor, int depth, tup
         for (tuple<int,int> move: board.findAllValidMoves(currentColor)){
             hasNoMoves = false;
             int x = currentColor;
-            tuple<int, int, int> value = minimax(board, (PieceColor)(-(int)currentColor), depth-1, move, false);
+            tuple<int, int, int> value = minimax(board, (PieceColor)(-(int)currentColor), depth-1, move, false, alpha, beta);
             if(get<2>(bestVal) > get<2>(value)){
                 bestVal = value;
+                alpha = max(alpha, get<2>(bestVal));
+                if (beta <= alpha) break;
             }
         }
         if(hasNoMoves){
-            minimax(board, (PieceColor)(-(int)currentColor), depth-1, lastMove, false); //TODO: Come back
+            minimax(board, (PieceColor)(-(int)currentColor), depth-1, lastMove, false, alpha, beta); //TODO: Come back
         }
         return tuple<int,int,int>(get<0>(lastMove),get<1>(lastMove),get<2>(bestVal));
     }
@@ -96,13 +98,15 @@ tuple<int,int, int> minimax(Board board, PieceColor currentColor, int depth, tup
         bool hasNoMoves = true;
         for (tuple<int,int> move: board.findAllValidMoves(currentColor)){
             hasNoMoves = false;
-            tuple<int, int, int> value = minimax(board, (PieceColor)(-(int)currentColor), depth-1, move, true);
+            tuple<int, int, int> value = minimax(board, (PieceColor)(-(int)currentColor), depth-1, move, true, alpha, beta);
             if(get<2>(bestVal) > get<2>(value)){
                 bestVal = value;
+                beta = min(beta, get<2>(bestVal));
+                if (beta <= alpha) break;
             }
         }
         if(hasNoMoves){
-            return minimax(board, (PieceColor)(-(int)currentColor), depth-1, lastMove, false); //TODO: Come back
+            return minimax(board, (PieceColor)(-(int)currentColor), depth-1, lastMove, false, alpha, beta); //TODO: Come back
         }
         return tuple<int,int,int>(get<0>(lastMove),get<1>(lastMove), get<2>(bestVal));
     }

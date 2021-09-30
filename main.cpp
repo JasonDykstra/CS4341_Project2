@@ -1,8 +1,7 @@
-
 #include <iostream>;
 #include <fstream>;
 #include <string>;
-//#include <unistd.h>;
+#include <unistd.h>;
 #include <windows.h>;
 
 using namespace std;
@@ -61,8 +60,9 @@ void gameLoop() {
             string agentMove = "E 4";
 
             writeMoveToFile(agentMove);
+            Sleep(50);
         }
-        sleep(1);
+        Sleep(1);
     }
 
     cout << "GAME ENDED!" << "\n";
