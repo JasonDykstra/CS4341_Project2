@@ -54,6 +54,11 @@ class Board{
         set_piece(4, 'D', PieceColor::ORANGE);
         set_piece(4, 'E', PieceColor::BLUE);
     };
+
+    Board(const Board &sourceBoard) {
+        *board = *sourceBoard.board;
+    };
+
     public:
     PieceColor _get_piece(int row, int col){
         return board[row*8 + col];
@@ -168,7 +173,7 @@ class Board{
         }
         return false;
     }
-    list<tuple<int,int>> findAllValidMoves(PieceColor color){
+    list<tuple<int,int>> find_all_valid_moves(PieceColor color){
         list<tuple<int,int>> moves = (list<tuple<int,int>>());; 
         for(int row = 0; row < 8; row++){
             for (int col = 0; col < 8; col++){

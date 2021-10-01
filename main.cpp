@@ -92,7 +92,7 @@ void gameLoop()
             }
 
             //!GET OUR AGENT'S MOVE
-            string agentMove = getBestMove(board, pieceColor);
+            string agentMove = getMoveMiniMax(board, pieceColor, oppPieceColor);
 
             writeMoveToFile(agentMove);
             sleep(50);
@@ -107,8 +107,33 @@ void gameLoop()
 void testGameLoop()
 {
     string c;
-    cout << "ficl: ";
+    cout << "Choose Color(O/B): ";
     cin >> c;
+    if(c == "O") {
+        cout << "Player Color: ORANGE";
+        pieceColor = PieceColor::BLUE;
+        oppPieceColor = PieceColor::ORANGE;
+    } else {
+        pieceColor = PieceColor::ORANGE;
+        oppPieceColor = PieceColor::BLUE;
+    }
+
+    Board board;
+    bool agentTurn = pieceColor == PieceColor::BLUE;
+
+    while(findWinner(board) == PieceColor::NONE) {
+        if(agentTurn) {
+            cout << "AI MAKING MOVE...\n";
+            string bestMove = getMoveMiniMax(board, pieceColor, oppPieceColor);
+            agentTurn = false;
+        } else {
+            cout << "Enter Move: ";
+            string move;
+            cin >> move;
+            makeOppMove(board, "us " + move);
+            agentTurn = true;
+        }
+    }
 }
 
 int main()
