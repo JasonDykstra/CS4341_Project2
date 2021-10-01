@@ -24,12 +24,14 @@ class BoardDirection{
 };
 
 tuple<int,int> interpret_coords(int row, char col){
+    //tuple<int, int> test = make_tuple(8 - row, (int)col - (int)'A');
+    //cout << "interp test: " << get<0>(test) << " " << get<1>(test) << " OLD:" << row << " " << col; 
     return make_tuple(8 - row, (int)col - (int)'A');
 }
 
-tuple<int,int> transform_coords(int row, char col){
+tuple<int,char> transform_coords(int row, int col){
 
-    return make_tuple(8 - row, int('A') + col);
+    return make_tuple(8 - row, (char)(int('A') + col));
 }
 
 bool out_of_bounds(int row, int col){
@@ -48,19 +50,26 @@ class Board{
         PieceColor board[boardSize];
 
     Board(){
-        board[boardSize] = {PieceColor::NONE};
-        set_piece(5, 'D', PieceColor::BLUE);
-        set_piece(5, 'E', PieceColor::ORANGE);
-        set_piece(4, 'D', PieceColor::ORANGE);
-        set_piece(4, 'E', PieceColor::BLUE);
-    };
-
-    Board(const Board &sourceBoard) {
-        *board = *sourceBoard.board;
+        for(int i = 0; i < boardSize; i++) {
+            board[i] = {PieceColor::NONE};
+        }
+        set_piece(5, 'D', PieceColor::ORANGE);
+        set_piece(5, 'E', PieceColor::BLUE);
+        set_piece(4, 'D', PieceColor::BLUE);
+        set_piece(4, 'E', PieceColor::ORANGE);
     };
 
     public:
+     Board clone() {
+         Board newBoard = Board();
+         for(int i= 0; i<Board::boardSize;i++){
+             newBoard.board[i] = board[i];
+         }
+         return newBoard;
+     }
+
     PieceColor _get_piece(int row, int col){
+        // cout << "get piece returning: " << board[row*8 + col] << " which is i = " << (row*8+col) << "\n";
         return board[row*8 + col];
     }
 
@@ -72,30 +81,36 @@ class Board{
 
     list<tuple<int,int>> _get_enveloped_pieces(int row, int col, PieceColor color){
         list<tuple<int,int>> enveloped = (list<tuple<int,int>>());
-
+        // cout << "Coordinates passed into Get_enveloped_pieces: " << row << " " << col << "\n";
+        
         for(tuple<int,int> off: directions){
             int row_off = get<0>(off), col_off = get<1>(off);
             int row_curr = row, col_curr = col;
 
             list<tuple<int,int>> potential_flip = (list<tuple<int,int>>());
             bool envelop = false;
-            while(!out_of_bounds(row_curr + row_off, col_curr+col_off)){
+            while(!out_of_bounds(row_curr + row_off, col_curr + col_off)){
+                // cout << "Pos: " << row_curr << " " << col_curr << " checking: " << (row_curr + row_off) << " " << (col_curr + col_off) << "\n";
                 row_curr += row_off;
                 col_curr += col_off;
 
                 PieceColor color_curr = _get_piece(row_curr,col_curr);
+                // cout << "Piece color at " << row_curr << " " << col_curr << " is " << color_curr << "\n";
 
-                if (color_curr== NONE){
+                // End condition where we hit a none piece, meaning not enveloped
+                if (color_curr== PieceColor::NONE){
                     break;
                 }
+                // End condition where we hit a tile of same color
                 else if(color_curr == color){
                     if(potential_flip.size()> 0){
                         envelop=true;
-                        break;
                     }
+                    break;
                 }
+                // Middle condition where we hit tile of opposite color
                 else{
-                    potential_flip.push_front(tuple<int,int>(row_curr,col_curr));
+                    potential_flip.push_front(make_tuple(row_curr,col_curr));
                 }
 
             }  
@@ -114,7 +129,7 @@ class Board{
             return false;
         }
 
-        board[row*8 + col] = color;
+        board[row * 8 + col] = color;
 
         list<tuple<int,int>> envelop = _get_enveloped_pieces(row, col, color);
 
@@ -136,15 +151,13 @@ class Board{
     }
 
     bool is_full(){
-        int count = 0;
-
         for(int i=0; i < boardSize; i++){
-            if(board[i]== NONE){
-                count++;
+            if(board[i] != NONE){
+                return false;
             }
         }
 
-        return (count == 0);
+        return true;
     }
 
     map<PieceColor,int> get_counts(){
@@ -175,9 +188,12 @@ class Board{
     }
     list<tuple<int,int>> find_all_valid_moves(PieceColor color){
         list<tuple<int,int>> moves = (list<tuple<int,int>>());; 
+
         for(int row = 0; row < 8; row++){
             for (int col = 0; col < 8; col++){
                 PieceColor piece = _get_piece(row, col);
+
+
                 if(piece == NONE && (_get_enveloped_pieces(row,col,color)).size() > 0) {
                     moves.push_front(make_tuple(row,col));
                 }
@@ -192,21 +208,19 @@ class Board{
             out+= to_string(8-i) + "  ";
             for(int j=0; j<8; j++){
                 PieceColor color= _get_piece(i,j);
-                switch (color){
-                case NONE:
-                    out+="X";
-                    break;
-                case ORANGE:
+                if(color == ORANGE) {
                     out+="O";
-                    break;
-                case BLUE:
+                } else if(color == BLUE) {
                     out+="B";
-                    break;
+                } else {
+                    out += "*";
                 }
+               
                 out+= "  ";
             }
-        out+= "   A  B  C  D  E  F  G  H";
+            out += "\n";
         }
+        out+= "   A  B  C  D  E  F  G  H\n";
         return out;
     }
 };

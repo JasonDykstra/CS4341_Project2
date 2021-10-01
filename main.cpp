@@ -46,27 +46,47 @@ inline bool fileExists(const string &fileName)
     return (stat(fileName.c_str(), &buffer) == 0);
 }
 
-string *parseMoveLine(string line)
+// Tuple: <team name, column, row>
+tuple<string, string, string> parseMoveLine(string line)
 {
-    string parsedMove[3];
-    int i = 0;
+    printf("line: %s", line);
+    tuple<string, string, string> ans = tuple<string,string,string>();
 
-    stringstream ss(line);
-    while (ss.good() && i < 3)
-    {
-        ss >> parsedMove[i];
-        ++i;
-    }
-    return parsedMove;
+    // Find index of first space
+    int first_space = line.find(" ");
+
+    // Set first element of tuple to the team name (string before the space)
+    get<0>(ans) = line.substr(0, first_space);
+    // Get index of second space
+    int second_space = line.find(" ", first_space + 1);
+    // Set second element of tuple to column
+    get<1>(ans) = line.substr(first_space + 1, second_space);
+    // Set last element of tuple to row
+    get<2>(ans) = line.substr(second_space + 1, line.length());
+
+    return ans;
+    
 }
 
-void makeOppMove(Board board, string move)
+void makeOppMove(Board* board, string move)
 {
-    string *parsedMove = parseMoveLine(move);
-    int row = (int)move[1] - 65;
-    int column = move[2];
+    cout << "In make opp move." << endl;
+    // Get the parsed move line
+    printf(" move: %s", move);
+    tuple<string, string, string> parsedMove = (parseMoveLine(move));
+    printf("tuple: %s, %s, %s",  get<0>(parsedMove), get<1>(parsedMove), get<2>(parsedMove));
+    // get the string representations of row and col from the parsed move tuple
+    string str_row = get<2>(parsedMove);
+    string str_column = get<1>(parsedMove);
+    // Convert the string representations into int and char respectrively to pass into interpret coords function
+    // int row = stoi(str_row);
+    // char col = str_column.at(0);
 
-    board._set_piece(row, column, oppPieceColor);
+    // // Get the interpreted coords as ints in internal graph as 0-7 to manipulate array
+    // tuple<int, int> coords = interpret_coords(row, col);
+    
+
+    // (*board).set_piece(get<0>(coords), get<1>(coords), oppPieceColor);
 }
 
 void gameLoop()
@@ -79,9 +99,10 @@ void gameLoop()
 
             //Update board with opponentMove
             string opponentMove = getOpponentMove();
+            
             if (opponentMove != "")
             {
-                makeOppMove(board, opponentMove);
+                makeOppMove(&board, opponentMove);
             }
 
             //set piece color if nonexistant
@@ -92,7 +113,7 @@ void gameLoop()
             }
 
             //!GET OUR AGENT'S MOVE
-            string agentMove = getMoveMiniMax(board, pieceColor, oppPieceColor);
+            string agentMove = getMoveMiniMax(&board, pieceColor, oppPieceColor);
 
             writeMoveToFile(agentMove);
             sleep(50);
@@ -110,7 +131,7 @@ void testGameLoop()
     cout << "Choose Color(O/B): ";
     cin >> c;
     if(c == "O") {
-        cout << "Player Color: ORANGE";
+        cout << "Player Color: ORANGE\n";
         pieceColor = PieceColor::BLUE;
         oppPieceColor = PieceColor::ORANGE;
     } else {
@@ -118,27 +139,35 @@ void testGameLoop()
         oppPieceColor = PieceColor::BLUE;
     }
 
-    Board board;
+    Board board = Board();
+
+    cout << board.__str__() << "\n";
+
     bool agentTurn = pieceColor == PieceColor::BLUE;
 
     while(findWinner(board) == PieceColor::NONE) {
         if(agentTurn) {
             cout << "AI MAKING MOVE...\n";
-            string bestMove = getMoveMiniMax(board, pieceColor, oppPieceColor);
+            string bestMove = getMoveMiniMax(&board, pieceColor, oppPieceColor);
+            
             agentTurn = false;
+            cout << board.__str__();
         } else {
             cout << "Enter Move: ";
             string move;
             cin >> move;
-            makeOppMove(board, "us " + move);
+            printf("move from testgameloop: %s", move);
+            makeOppMove(&board, "us " + move);
             agentTurn = true;
+            cout << board.__str__();
         }
+        cout << "-------------" << "\n";
+        sleep(1);
     }
 }
 
 int main()
 {
-    cout << "did it work?" << "\n";
     testGameLoop();
     //gameLoop();
 }
