@@ -11,7 +11,7 @@ using namespace std;
 
 const string MOVE_FILE_NAME = "move_file";
 const string END_GAME_FILE_NAME = "end_game";
-const string TEAM_NAME = "Got";
+const string TEAM_NAME = "UnnecessaryStruggle";
 PieceColor pieceColor = PieceColor::NONE;
 PieceColor oppPieceColor = PieceColor::NONE;
 
