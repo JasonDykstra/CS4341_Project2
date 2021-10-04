@@ -110,8 +110,13 @@ void gameLoop()
             //cout << "OPP MADE MOVE: " << opponentMove << endl;
             if (pieceColor == PieceColor::NONE)
             {
-                pieceColor = (opponentMove == "") ? PieceColor::BLUE : PieceColor::ORANGE;
-                oppPieceColor = (opponentMove == "") ? PieceColor::ORANGE : PieceColor::BLUE;
+                if(opponentMove == "") {
+                    pieceColor = PieceColor::BLUE;
+                    oppPieceColor = PieceColor::ORANGE;
+                } else {
+                    pieceColor = PieceColor::ORANGE;
+                    oppPieceColor = PieceColor::BLUE;
+                }
             }
             
             bool cancelMove = false;
@@ -132,10 +137,12 @@ void gameLoop()
                 //cout << "Made Move: " << agentMove << endl;
                 writeMoveToFile(agentMove);
                 //cout << board.__str__() << endl;
+
                 sleep(1);
+                
             }
         }
-        sleep(.1);
+        sleep(.01);
     }
     
     cout << "GAME ENDED!" << "\n";

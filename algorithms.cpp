@@ -2,7 +2,7 @@
 #include <chrono>
 
 using namespace std;
-const int MINIMAX_DEPTH = 5;
+const int MINIMAX_DEPTH = 6;
 
 PieceColor findWinner(int blueCount, int orangeCount)
 {
@@ -233,7 +233,6 @@ string getMoveMiniMax(Board* board, PieceColor agentPC, PieceColor oppPC) {
         //update board
         (*board)._set_piece(row, column, agentPC);
         
-        auto done = std::chrono::high_resolution_clock::now();
 
         tuple<int, char> boardCoords= transform_coords(row, column);
         int test_row = get<0>(boardCoords);
@@ -248,7 +247,8 @@ string getMoveMiniMax(Board* board, PieceColor agentPC, PieceColor oppPC) {
         move.append(" ");
         move.append(str_row);
        // cout << "BEST MOVE RETURN: " << move << "\n";
+        auto done = std::chrono::high_resolution_clock::now();
 
-        //std::cout << "Agent took: " << chrono::duration_cast<std::chrono::milliseconds>(done-started).count() << "ms\n";
+        std::cout << "Agent took: " << chrono::duration_cast<std::chrono::milliseconds>(done-started).count() << "ms\n";
         return move;
 }
