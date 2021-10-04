@@ -224,5 +224,67 @@ class Board{
         out+= "   A  B  C  D  E  F  G  H\n";
         return out;
     }
+
+    tuple<int, int> fund_num_valid_moves(PieceColor color){
+        tuple<int, int> num_moves = tuple<int, int>();
+        int color1 = 0;
+        int color2 = 0;
+
+        PieceColor oppColor = (color == PieceColor.BLUE) ? PieceColor.ORANGE : PieceColor.BLUE;
+
+        // Loop over board and get number of valid moves for both colors
+        for(int row = 0; row < 8; row++){
+            for (int col = 0; col < 8; col++){
+                PieceColor piece = _get_piece(row, col);
+
+                if(piece == NONE){
+                    color1 += _can_envelop(row, col, color);
+                    color2 += _can_envelop(row, col, oppColor);
+                }
+            }
+        }
+
+        get<0>(num_moves) = color1;
+        get<1>(num_moves) = color2;
+
+        return num_moves;
+    }
+
+    bool _can_envelop(int row, int col, PieceColor color){        
+        for(tuple<int,int> off: directions){
+            int row_off = get<0>(off), col_off = get<1>(off);
+            int row_curr = row, col_curr = col;
+
+            list<tuple<int,int>> potential_flip = (list<tuple<int,int>>());
+            bool envelop = false;
+            while(!out_of_bounds(row_curr + row_off, col_curr + col_off)){
+                row_curr += row_off;
+                col_curr += col_off;
+
+                PieceColor color_curr = _get_piece(row_curr,col_curr);
+
+                // End condition where we hit a none piece, meaning not enveloped
+                if (color_curr== PieceColor::NONE){
+                    break;
+                }
+                // End condition where we hit a tile of same color
+                else if(color_curr == color){
+                    if(potential_flip.size()> 0){
+                        // If you can envelop, return true
+                        return true;
+                    }
+                    break;
+                }
+                // Middle condition where we hit tile of opposite color
+                else{
+                    potential_flip.push_front(make_tuple(row_curr,col_curr));
+                }
+
+            }   
+        }
+        return enveloped;
+    }
+
+
 };
 

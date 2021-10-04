@@ -35,8 +35,9 @@ PieceColor findWinner(Board board)
 
 double mobilityHeuristic(Board board, PieceColor maximizingColor)
 {
-    int maximizingColorMoves = (board.find_all_valid_moves(maximizingColor)).size();
-    int minimizingColorMoves = (board.find_all_valid_moves(static_cast<PieceColor>(-(int)maximizingColor))).size();
+    tuple<int, int> numValidMoves = board.find_num_valid_moves(maximizingColor);
+    int maximizingColorMoves = get<0>(numValidMoves);
+    int minimizingColorMoves = get<1>(numValidMoves);
     if (maximizingColorMoves + minimizingColorMoves != 0)
     {
         int mobilityScore = 100 * (maximizingColorMoves - minimizingColorMoves) / (maximizingColorMoves + minimizingColorMoves);
