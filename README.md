@@ -23,7 +23,7 @@ Our program uses a weighted board utility function, where we use a static map of
 
 In order to apply this heuristic, we sum up the weights in the tiles that our team has posession of in any given board, and subtract the sum of the weights for tiles which the opponenet owns. This gives us an integer which represents the "score" of any given board which we can use to determine how good one move is compared to another. As seen above, we represented priority over corners and edges by giving them a relatively large positive weight, whereas spaces adjacent to corners or spaces where we don't want to move, we give a large negative weight.
 
-When looking at each node (or board), our program uses alpha beta pruning in order to stop expanding nodes as they become worthless to continue expanding. This may happen when a best solution is already found, thus eliminating the need to explore further nodes.
+When looking at each node (or board), our program uses alpha beta pruning in order to stop expanding nodes as they become worthless to continue expanding. This may happen when a best solution is already found, thus eliminating the need to explore further nodes. Additionally, we use depth-limited search in order to prevent minimax from expanding the entire search tree. Without this, we would go well over our time limit and not be able to produce a best move. We use this for example in our weighted graph heuristic where we limit our depth of minimax to six (algorithms.cpp:139).
 
 ---
 
