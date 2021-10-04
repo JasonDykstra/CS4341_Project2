@@ -225,7 +225,7 @@ class Board{
         return out;
     }
 
-    tuple<int, int> fund_num_valid_moves(PieceColor color){
+    tuple<int, int> find_num_valid_moves(PieceColor color){
         tuple<int, int> num_moves = tuple<int, int>();
         int color1 = 0;
         int color2 = 0;
