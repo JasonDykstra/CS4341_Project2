@@ -138,9 +138,9 @@ int minimax(Board board, bool isMaximizingPlayer, int depth, PieceColor maxPC, P
     //Bottom of Board CHECK
     if(depth == 0) {
         if(isMaximizingPlayer) {
-            return quickHeuristc(board, maxPC);
+            return weightedBoardHeuristic(board, maxPC);
         } else {
-            return -quickHeuristc(board, minPC);
+            return -weightedBoardHeuristic(board, minPC);
         }
     }
 
@@ -199,10 +199,9 @@ string getMoveMiniMax(Board* board, PieceColor agentPC, PieceColor oppPC) {
     list<tuple<int,int>> allMoves = (*board).find_all_valid_moves(agentPC);
 
     //No move avaible
-    if(allMoves.size() == 0) {
-        return "PASS";
-    } else {
-        cout << "MOVE FOUND\n";
+    if(allMoves.size() <= 0) {
+        //cout << "no valid moves found, returning pass" << endl;
+        return "P 4";
     }
 
     //determing our best move
@@ -210,7 +209,7 @@ string getMoveMiniMax(Board* board, PieceColor agentPC, PieceColor oppPC) {
     int bestHeuristic = INT_MIN;
     for(tuple<int, int> move : allMoves) {
          tuple<int, char> transformedCoords = transform_coords(get<0>(move), get<1>(move));
-        cout << "Move: " << get<1>(transformedCoords) << " " << get<0>(transformedCoords) << "\n";
+        //cout << "Move: " << get<1>(transformedCoords) << " " << get<0>(transformedCoords) << "\n";
     }
     
     for(tuple<int, int> move : allMoves) {
@@ -237,8 +236,19 @@ string getMoveMiniMax(Board* board, PieceColor agentPC, PieceColor oppPC) {
         auto done = std::chrono::high_resolution_clock::now();
 
         tuple<int, char> boardCoords= transform_coords(row, column);
-        cout << "BEST MOVE RETURN: " << get<1>(boardCoords) << " " << get<0>(boardCoords) << "\n";
+        int test_row = get<0>(boardCoords);
+        char test_col = get<1>(boardCoords);
 
-        std::cout << "Agent took: " << chrono::duration_cast<std::chrono::milliseconds>(done-started).count() << "ms\n";
-        return get<1>(boardCoords) + " " + get<0>(boardCoords);
+        string str_row = to_string(test_row);
+
+        //cout << "test col: " << test_col << " str row: " << str_row << endl;
+        
+        string move;
+        move.append(string(1, test_col));
+        move.append(" ");
+        move.append(str_row);
+       // cout << "BEST MOVE RETURN: " << move << "\n";
+
+        //std::cout << "Agent took: " << chrono::duration_cast<std::chrono::milliseconds>(done-started).count() << "ms\n";
+        return move;
 }

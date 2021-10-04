@@ -104,6 +104,7 @@ class Board{
                 // End condition where we hit a tile of same color
                 else if(color_curr == color){
                     if(potential_flip.size()> 0){
+                        // cout << "Found path with direction: (" << get<0>(off) << ", " << get<1>(off) << ") hit cell in " << row_curr << ", " << col_curr << endl;
                         envelop=true;
                     }
                     break;

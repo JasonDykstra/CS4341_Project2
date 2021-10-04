@@ -3,15 +3,15 @@
 #include <string>
 #include <unistd.h>
 #include "algorithms.cpp"
-// #include <windows.h>
+#include <windows.h>
 #include <sys/stat.h>
 #include <sstream>
 
 using namespace std;
 
-const string MOVE_FILE_NAME = "move_file.txt";
+const string MOVE_FILE_NAME = "move_file";
 const string END_GAME_FILE_NAME = "end_game";
-const string TEAM_NAME = "MountainGoats";
+const string TEAM_NAME = "Got";
 PieceColor pieceColor = PieceColor::NONE;
 PieceColor oppPieceColor = PieceColor::NONE;
 
@@ -22,7 +22,7 @@ string getOpponentMove()
     //Check file is opened?
 
     //read file line
-    string opponentMove;
+    string opponentMove = "";
     getline(moveFile, opponentMove);
 
     moveFile.close();
@@ -30,7 +30,7 @@ string getOpponentMove()
 }
 
 //moveCoordinates -> e.x "E 1"
-void writeMoveToFile(string moveCoordinates)
+void writeMoveToFile(string moveCoordinates) //NEED TO FIX
 {
     //Open and Clear File
     ofstream moveFile(MOVE_FILE_NAME, ios::out | ios::trunc);
@@ -38,6 +38,8 @@ void writeMoveToFile(string moveCoordinates)
     //write to file and close
     moveFile << TEAM_NAME + " " + moveCoordinates;
     moveFile.close();
+    //cout << "wrote move: " << TEAM_NAME + " " + moveCoordinates << endl;
+
 }
 
 inline bool fileExists(const string &fileName)
@@ -49,7 +51,6 @@ inline bool fileExists(const string &fileName)
 // Tuple: <team name, column, row>
 tuple<string, string, string> parseMoveLine(string line)
 {
-    printf("line: %s", line);
     tuple<string, string, string> ans = tuple<string,string,string>();
 
     // Find index of first space
@@ -57,72 +58,88 @@ tuple<string, string, string> parseMoveLine(string line)
 
     // Set first element of tuple to the team name (string before the space)
     get<0>(ans) = line.substr(0, first_space);
+    
     // Get index of second space
     int second_space = line.find(" ", first_space + 1);
     // Set second element of tuple to column
-    get<1>(ans) = line.substr(first_space + 1, second_space);
+    get<1>(ans) = line.substr(first_space + 1, 1);
     // Set last element of tuple to row
-    get<2>(ans) = line.substr(second_space + 1, line.length());
+    get<2>(ans) = line.substr(second_space + 1, 1);
 
     return ans;
     
 }
 
-void makeOppMove(Board* board, string move)
+bool makeOppMove(Board* board, string move)
 {
-    cout << "In make opp move." << endl;
     // Get the parsed move line
-    printf(" move: %s", move);
     tuple<string, string, string> parsedMove = (parseMoveLine(move));
-    printf("tuple: %s, %s, %s",  get<0>(parsedMove), get<1>(parsedMove), get<2>(parsedMove));
+
+    if(get<0>(parsedMove) == TEAM_NAME)
+        return true;
     // get the string representations of row and col from the parsed move tuple
     string str_row = get<2>(parsedMove);
     string str_column = get<1>(parsedMove);
-    // Convert the string representations into int and char respectrively to pass into interpret coords function
-    // int row = stoi(str_row);
-    // char col = str_column.at(0);
 
-    // // Get the interpreted coords as ints in internal graph as 0-7 to manipulate array
-    // tuple<int, int> coords = interpret_coords(row, col);
-    
+    // Convert row and col into proper types to be passed into interpret coords
+    int row = stoi(str_row);
+    char col;
+    // Set char to first entry in column (e.g. "C")
+    col = str_column[0];
 
-    // (*board).set_piece(get<0>(coords), get<1>(coords), oppPieceColor);
+    // Call interpret coords to translate "A 5" into (0, 4) for example
+
+    // Make the move
+    if(col != 'P')
+        (*board).set_piece(row, col, oppPieceColor);
+    //cout << "Move made!" << endl;
+    return false;
 }
 
 void gameLoop()
 {
-    Board board;
+    Board board = Board();
     while (!fileExists(END_GAME_FILE_NAME))
     {
         if (fileExists(TEAM_NAME + ".go"))
-        {
+        { 
+            //cout << "teamname.go file found!!" << endl;
 
             //Update board with opponentMove
             string opponentMove = getOpponentMove();
-            
-            if (opponentMove != "")
-            {
-                makeOppMove(&board, opponentMove);
-            }
-
-            //set piece color if nonexistant
+            //cout << "OPP MADE MOVE: " << opponentMove << endl;
             if (pieceColor == PieceColor::NONE)
             {
                 pieceColor = (opponentMove == "") ? PieceColor::BLUE : PieceColor::ORANGE;
                 oppPieceColor = (opponentMove == "") ? PieceColor::ORANGE : PieceColor::BLUE;
             }
+            
+            bool cancelMove = false;
+            if (opponentMove != "")
+            {
+                cancelMove = makeOppMove(&board, opponentMove);
+            }
 
-            //!GET OUR AGENT'S MOVE
-            string agentMove = getMoveMiniMax(&board, pieceColor, oppPieceColor);
+            if(!cancelMove) {
+               // cout << board.__str__() << endl;
+                //set piece color if nonexistant
+                
 
-            writeMoveToFile(agentMove);
-            sleep(50);
+                //!GET OUR AGENT'S MOVE
+                // PROBLEM IS THAT REFEREE DOESNT SEE OUR MOVE WHEN WE WRITE A PASS FOR WHATEVER REASON
+                // WE NEED TO FIND OUT WHY PASSES ARE WRITING TO FILE DIFFERENTLY OR SLOWER?
+                string agentMove = getMoveMiniMax(&board, pieceColor, oppPieceColor);
+                //cout << "Made Move: " << agentMove << endl;
+                writeMoveToFile(agentMove);
+                //cout << board.__str__() << endl;
+                sleep(1);
+            }
         }
-        sleep(1);
+        sleep(.1);
     }
-
-    cout << "GAME ENDED!"
-         << "\n";
+    
+    cout << "GAME ENDED!" << "\n";
+    sleep(100000);
 }
 
 void testGameLoop()
@@ -149,25 +166,31 @@ void testGameLoop()
         if(agentTurn) {
             cout << "AI MAKING MOVE...\n";
             string bestMove = getMoveMiniMax(&board, pieceColor, oppPieceColor);
-            
+
             agentTurn = false;
             cout << board.__str__();
         } else {
-            cout << "Enter Move: ";
+            cout << "Enter Move(\"COL ROW\"): ";
             string move;
-            cin >> move;
-            printf("move from testgameloop: %s", move);
+            getline(cin >> ws, move);
+            
+            cout << move << endl;
+
             makeOppMove(&board, "us " + move);
+            
             agentTurn = true;
             cout << board.__str__();
         }
         cout << "-------------" << "\n";
-        sleep(1);
+        Sleep(1);
     }
+
+    cout << "Winner found, exiting loop" << endl;
 }
 
 int main()
-{
-    testGameLoop();
-    //gameLoop();
+{   
+    cout << "AI: " << TEAM_NAME << " Starting up..." << endl;
+    //testGameLoop();
+    gameLoop();
 }
